@@ -296,7 +296,7 @@ window.__ModuleLoader__.load({
     const { useState, useEffect } = React
     const h = React.createElement
 
-    const MARKET_VERSION = '0.1.66'
+    const MARKET_VERSION = '0.1.67'
 
     const CATEGORIES = {
       ui: { zh: '界面与主题', en: 'UI & Themes' },
