@@ -8,9 +8,23 @@ import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { catalogFromParsed, registryUrls, REGISTRY_TIMEOUT_MS } from './registry-load.mjs'
 
-export function resolveDshProfile(env = process.env) {
+// DSH ≥0.1.7 / 0.2.x: launcher provides profileContext on the host (name is
+// the --profile value). DSH_PROFILE is only injected into shell children
+// (dsh-shell-env), so the host process usually has no env. Read context
+// first; never throw if the service is missing (older 0.1.x hosts).
+// Confirmed: deepseek-ai/deepseek-harness packages/boot/app-boot/src/profile-context.ts
+// and apps/cli/src/profile-boot.ts (dsh-v0.2.1-rc.4): hostCtx.provide('profileContext', { name, … }).
+export function resolveDshProfile({ ctx, env = process.env } = {}) {
+  try {
+    if (ctx && typeof ctx.get === 'function') {
+      const pc = ctx.get('profileContext')
+      const name = pc && typeof pc.name === 'string' ? pc.name.trim() : ''
+      if (name) return { name, source: 'context' }
+    }
+  } catch { /* ctx.get may throw without inject; treat as absent */ }
   const raw = env && typeof env.DSH_PROFILE === 'string' ? env.DSH_PROFILE.trim() : ''
-  return raw || 'web'
+  if (raw) return { name: raw, source: 'env' }
+  return { name: 'web', source: 'fallback' }
 }
 
 const STATE_DIR = join(homedir(), '.dsh', 'plugin-market')
@@ -18,10 +32,12 @@ const STATE_FILE = join(STATE_DIR, 'state.json')
 const SKILLS_ROOT = join(homedir(), '.agents', 'skills')
 const PRESETS_ROOT = join(homedir(), '.dsh', '.agent-presets')
 const DSH_HOME = process.env.DSH_HOME || join(homedir(), '.dsh')
-const DSH_PROFILE = resolveDshProfile()
-const PROFILE_MANIFEST = join(DSH_HOME, 'profiles', DSH_PROFILE, 'package.json')
-const profileWorkspace = () => join(DSH_HOME, 'profiles', DSH_PROFILE, 'pnpm-workspace.yaml')
-const pluginCmd = (action, spec) => 'dsh plugin --profile ' + DSH_PROFILE + ' ' + action + ' ' + spec
+let resolvedProfile = resolveDshProfile()
+const currentProfile = () => resolvedProfile.name
+const currentProfileSource = () => resolvedProfile.source
+const profileManifest = () => join(DSH_HOME, 'profiles', currentProfile(), 'package.json')
+const profileWorkspace = () => join(DSH_HOME, 'profiles', currentProfile(), 'pnpm-workspace.yaml')
+const pluginCmd = (action, spec) => 'dsh plugin --profile ' + currentProfile() + ' ' + action + ' ' + spec
 
 // 详情页可切换的 README 语言变体（探测顺序即展示顺序，README.md 固定优先）
 const README_VARIANTS = [
@@ -33,14 +49,14 @@ const README_VARIANTS = [
 
 async function readProfileManifest() {
   try {
-    return JSON.parse(await readFile(PROFILE_MANIFEST, 'utf8'))
+    return JSON.parse(await readFile(profileManifest(), 'utf8'))
   } catch {
     return null
   }
 }
 
 async function writeProfileManifest(m) {
-  await writeFile(PROFILE_MANIFEST, JSON.stringify(m, null, 2) + '\n')
+  await writeFile(profileManifest(), JSON.stringify(m, null, 2) + '\n')
 }
 
 // 放行 pnpm 构建脚本（pnpm-workspace.yaml 顶层设置 —— pnpm 10.4+ 读取顶层键，
@@ -123,7 +139,7 @@ async function otherProfileMap() {
   let dirs = []
   try { dirs = await readdir(join(DSH_HOME, 'profiles')) } catch { return map }
   for (const d of dirs) {
-    if (d === DSH_PROFILE || d.startsWith('-')) continue
+    if (d === currentProfile() || d.startsWith('-')) continue
     try {
       const m = JSON.parse(await readFile(join(DSH_HOME, 'profiles', d, 'package.json'), 'utf8'))
       const names = new Set(Object.keys(m.dependencies || {}))
@@ -350,7 +366,7 @@ async function performInstall(args, job) {
       const installed = state.installed || {}
       installed[args.id] = { type: 'bundle', spec: args.spec || repoUrl, package: pkgName, at: new Date().toISOString(), installCmd: cloneCmd }
       await writeState({ installed })
-      return finishJob(job, { status: 'done', message: '已按项目 README 自动构建并安装到 ' + DSH_PROFILE + ' profile（' + pkgName + '），重启 dsh 后生效' })
+      return finishJob(job, { status: 'done', message: '已按项目 README 自动构建并安装到 ' + currentProfile() + ' profile（' + pkgName + '），重启 dsh 后生效' })
     } finally {
       await rm(tmp, { recursive: true, force: true }).catch(() => {})
     }
@@ -446,7 +462,7 @@ async function performInstall(args, job) {
     }
     await writeState({ installed })
     const migrateNote = migratedFrom.length > 0 ? '（已自动从其他 profile 迁移: ' + migratedFrom.join(', ') + '）' : ''
-    return finishJob(job, { status: 'done', message: '已安装到 ' + DSH_PROFILE + ' profile，重启 dsh 后生效' + migrateNote })
+    return finishJob(job, { status: 'done', message: '已安装到 ' + currentProfile() + ' profile，重启 dsh 后生效' + migrateNote })
   }
   if (args.type === 'pack') {
     const url = args.spec
@@ -593,7 +609,7 @@ function startRemove(args) {
 function agentUserText(kind, name, repo, spec, unverified) {
   if (kind === 'install') {
     let s = '（我刚在插件市场点了「安装」）帮我把「' + name + '」装到我的 DSH 上吧。\n' +
-      '仓库在 https://github.com/' + repo + ' ，你按它 README 或 INSTALL.md 的步骤装就行，优先装进 ' + DSH_PROFILE + ' profile；' +
+      '仓库在 https://github.com/' + repo + ' ，你按它 README 或 INSTALL.md 的步骤装就行，优先装进 ' + currentProfile() + ' profile；' +
       (spec ? '安装源可以试试 ' + spec + '；' : '') +
       '如果 pnpm 拦构建脚本，放行一下再装。\n' +
       '有需要我选择、确认或提供信息（账号、key、路径）的地方直接问我，装完告诉我装好没、要不要重启。'
@@ -947,7 +963,7 @@ async function removeFromAllProfiles(name, job) {
       ? await runShellLogged(job, pluginCmd('remove', q(name)), 300000, { fullAccess: true })
       : await runShell(pluginCmd('remove', q(name)), 300000, { fullAccess: true })
     if (!r.ok) return { ok: false, error: (r.stderr || '').trim() || 'dsh plugin remove 失败' }
-    cleaned.push(DSH_PROFILE)
+    cleaned.push(currentProfile())
   }
   const otherMap = await otherProfileMap()
   for (const prof of (otherMap.get(name) || [])) {
@@ -982,7 +998,8 @@ export default {
   apply(ctx) {
     const webServer = ctx.webServer
     const shell = ctx.shell
-    console.log('[dsh-market] host apply: webServer=' + (webServer !== undefined) + ' shell=' + (shell !== undefined))
+    resolvedProfile = resolveDshProfile({ ctx })
+    console.log('[dsh-market] host apply: webServer=' + (webServer !== undefined) + ' shell=' + (shell !== undefined) + ' profile=' + resolvedProfile.name + ' source=' + resolvedProfile.source)
     runShell.shellService = shell
     runShell.sandboxPolicyService = ctx.get('sandboxPolicy')
     installedRows.loader = ctx.loader
@@ -1030,7 +1047,7 @@ export default {
           return json(res, 200, startUninstall(body))
         }
         if (pathname === '/plugin-market/installed' && req.method === 'GET') {
-          return json(res, 200, { ok: true, profile: DSH_PROFILE, rows: await installedRows() })
+          return json(res, 200, { ok: true, profile: currentProfile(), source: currentProfileSource(), rows: await installedRows() })
         }
         if (pathname === '/plugin-market/toggle' && req.method === 'POST') {
           const body = JSON.parse((await readBody(req)) || '{}')
