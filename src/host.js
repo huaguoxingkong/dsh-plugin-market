@@ -7,12 +7,21 @@ import { marked } from 'marked'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { catalogFromParsed, registryUrls, REGISTRY_TIMEOUT_MS } from './registry-load.mjs'
+
+export function resolveDshProfile(env = process.env) {
+  const raw = env && typeof env.DSH_PROFILE === 'string' ? env.DSH_PROFILE.trim() : ''
+  return raw || 'web'
+}
+
 const STATE_DIR = join(homedir(), '.dsh', 'plugin-market')
 const STATE_FILE = join(STATE_DIR, 'state.json')
 const SKILLS_ROOT = join(homedir(), '.agents', 'skills')
 const PRESETS_ROOT = join(homedir(), '.dsh', '.agent-presets')
 const DSH_HOME = process.env.DSH_HOME || join(homedir(), '.dsh')
-const PROFILE_MANIFEST = join(DSH_HOME, 'profiles', 'web', 'package.json')
+const DSH_PROFILE = resolveDshProfile()
+const PROFILE_MANIFEST = join(DSH_HOME, 'profiles', DSH_PROFILE, 'package.json')
+const profileWorkspace = () => join(DSH_HOME, 'profiles', DSH_PROFILE, 'pnpm-workspace.yaml')
+const pluginCmd = (action, spec) => 'dsh plugin --profile ' + DSH_PROFILE + ' ' + action + ' ' + spec
 
 // 详情页可切换的 README 语言变体（探测顺序即展示顺序，README.md 固定优先）
 const README_VARIANTS = [
@@ -40,7 +49,7 @@ async function writeProfileManifest(m) {
 // install/postinstall 两阶段；allowBuilds 映射写入 pnpm 报错要求的精确 depPath 键
 // （<包名>@<codeload-tarball-URL>）作为双保险。用户在弹窗点击安装即授权。
 async function allowBuild(extraKeys = []) {
-  const p = join(DSH_HOME, 'profiles', 'web', 'pnpm-workspace.yaml')
+  const p = profileWorkspace()
   let text = ''
   try { text = await readFile(p, 'utf8') } catch {}
   const lines = text.split('\n')
@@ -108,13 +117,13 @@ function profileInstalled(manifest) {
   return { deps, bundles }
 }
 
-// 扫描其他 profile（排除 web），返回 包名 → [profile 名] 映射
+// 扫描其他 profile（排除当前 DSH_PROFILE），返回 包名 → [profile 名] 映射
 async function otherProfileMap() {
   const map = new Map()
   let dirs = []
   try { dirs = await readdir(join(DSH_HOME, 'profiles')) } catch { return map }
   for (const d of dirs) {
-    if (d === 'web' || d.startsWith('-')) continue
+    if (d === DSH_PROFILE || d.startsWith('-')) continue
     try {
       const m = JSON.parse(await readFile(join(DSH_HOME, 'profiles', d, 'package.json'), 'utf8'))
       const names = new Set(Object.keys(m.dependencies || {}))
@@ -253,7 +262,7 @@ async function performInstall(args, job) {
   }
   if (method === 'git-clone') {
     // 全自动构建安装：克隆 → 按锁文件选包管理器装依赖 → 有 build 脚本则构建 →
-    // pack 成 tarball → dsh plugin --profile web add <本地 tarball>（与项目 README 文档一致）
+    // pack 成 tarball → pluginCmd('add', …) 安装本地 tarball（与项目 README 文档一致）
     if (process.platform === 'win32') {
       return finishJob(job, { status: 'error', error: '当前系统暂不支持自动构建安装，请打开详情按 README 手动安装' })
     }
@@ -317,7 +326,7 @@ async function performInstall(args, job) {
       const pkgName = pkgJson.name || args.package || args.id
       appendJobLine(job, '通过 dsh plugin add 安装本地 tarball: ' + tgzName)
       try { await allowBuild() } catch {}
-      let r6 = await runShellLogged(job, 'dsh plugin --profile web add ' + q(tgzPath), 300000, { fullAccess: true })
+      let r6 = await runShellLogged(job, pluginCmd('add', q(tgzPath)), 300000, { fullAccess: true })
       if (!r6.ok) {
         const combined = ((r6.stdout || '') + '\n' + (r6.stderr || '')).replace(/\u001b\[[0-9;]*m/g, '').replace(/\[.*?m/g, '')
         const hintBlocked = /allowBuilds|prepare script|approve-builds|Ignored build scripts/i.test(combined)
@@ -331,7 +340,7 @@ async function performInstall(args, job) {
           }
           appendJobLine(job, '检测到 pnpm 构建脚本拦截，已解析 ' + exactKeys.length + ' 个放行键，正在重试…')
           try { await allowBuild(exactKeys) } catch {}
-          r6 = await runShellLogged(job, 'dsh plugin --profile web add ' + q(tgzPath), 300000, { fullAccess: true })
+          r6 = await runShellLogged(job, pluginCmd('add', q(tgzPath)), 300000, { fullAccess: true })
           if (!r6.ok) return finishJob(job, { status: 'error', error: '本地 tarball 安装仍失败，完整输出见上方日志' })
         } else {
           return finishJob(job, { status: 'error', error: '本地 tarball 安装失败，完整输出见上方日志' })
@@ -341,7 +350,7 @@ async function performInstall(args, job) {
       const installed = state.installed || {}
       installed[args.id] = { type: 'bundle', spec: args.spec || repoUrl, package: pkgName, at: new Date().toISOString(), installCmd: cloneCmd }
       await writeState({ installed })
-      return finishJob(job, { status: 'done', message: '已按项目 README 自动构建并安装到 web profile（' + pkgName + '），重启 dsh 后生效' })
+      return finishJob(job, { status: 'done', message: '已按项目 README 自动构建并安装到 ' + DSH_PROFILE + ' profile（' + pkgName + '），重启 dsh 后生效' })
     } finally {
       await rm(tmp, { recursive: true, force: true }).catch(() => {})
     }
@@ -362,7 +371,7 @@ async function performInstall(args, job) {
       const deps0 = (manifest0 && manifest0.dependencies) || {}
       if (deps0['dsh-plugin-market']) {
         appendJobLine(job, '检测到旧版包名 dsh-plugin-market，先移除再安装 @ace-zone/dsh-market …')
-        const rmRes = await runShellLogged(job, 'dsh plugin --profile web remove dsh-plugin-market', 300000, { fullAccess: true })
+        const rmRes = await runShellLogged(job, pluginCmd('remove', 'dsh-plugin-market'), 300000, { fullAccess: true })
         if (!rmRes.ok) appendJobLine(job, '旧名移除未成功（继续安装新名，稍后可手动清理）')
       }
     }
@@ -377,7 +386,7 @@ async function performInstall(args, job) {
     const depsBefore = new Set(Object.keys(((await readProfileManifest()) || {}).dependencies || {}))
     appendJobLine(job, '正在预放行构建脚本（pnpm allowBuilds）…')
     try { await allowBuild() } catch {}
-    let r = await runShellLogged(job, 'dsh plugin --profile web add ' + q(args.spec), 300000, { fullAccess: true })
+    let r = await runShellLogged(job, pluginCmd('add', q(args.spec)), 300000, { fullAccess: true })
     if (!r.ok) {
       // 失败重试：命中 pnpm/CLI 构建拦截提示 → 放行 → 重试一次
       const combined = ((r.stdout || '') + '\n' + (r.stderr || '')).replace(/\u001b\[[0-9;]*m/g, '').replace(/\[.*?m/g, '')
@@ -395,12 +404,12 @@ async function performInstall(args, job) {
         }
         appendJobLine(job, '检测到 pnpm 构建脚本拦截，已解析 ' + exactKeys.length + ' 个放行键，正在重试…')
         try { await allowBuild(exactKeys) } catch {}
-        r = await runShellLogged(job, 'dsh plugin --profile web add ' + q(args.spec), 300000, { fullAccess: true })
+        r = await runShellLogged(job, pluginCmd('add', q(args.spec)), 300000, { fullAccess: true })
         if (!r.ok) {
           const tailOut = ((r.stdout || '').trim()).slice(-900)
           const tailErr = ((r.stderr || '').trim()).slice(-900)
           let yamlDump = ''
-          try { yamlDump = await readFile(join(DSH_HOME, 'profiles', 'web', 'pnpm-workspace.yaml'), 'utf8') } catch (e) { yamlDump = '(读取失败: ' + e.message + ')' }
+          try { yamlDump = await readFile(profileWorkspace(), 'utf8') } catch (e) { yamlDump = '(读取失败: ' + e.message + ')' }
           return finishJob(job, { status: 'error', error: '已自动放行构建脚本（' + exactKeys.length + ' 个键），但重试仍失败。\n--- pnpm-workspace.yaml ---\n' + yamlDump.trim() + '\n--- stdout ---\n' + tailOut + '\n--- stderr ---\n' + tailErr })
         }
       } else {
@@ -437,7 +446,7 @@ async function performInstall(args, job) {
     }
     await writeState({ installed })
     const migrateNote = migratedFrom.length > 0 ? '（已自动从其他 profile 迁移: ' + migratedFrom.join(', ') + '）' : ''
-    return finishJob(job, { status: 'done', message: '已安装到 web profile，重启 dsh 后生效' + migrateNote })
+    return finishJob(job, { status: 'done', message: '已安装到 ' + DSH_PROFILE + ' profile，重启 dsh 后生效' + migrateNote })
   }
   if (args.type === 'pack') {
     const url = args.spec
@@ -584,7 +593,7 @@ function startRemove(args) {
 function agentUserText(kind, name, repo, spec, unverified) {
   if (kind === 'install') {
     let s = '（我刚在插件市场点了「安装」）帮我把「' + name + '」装到我的 DSH 上吧。\n' +
-      '仓库在 https://github.com/' + repo + ' ，你按它 README 或 INSTALL.md 的步骤装就行，优先装进 web profile；' +
+      '仓库在 https://github.com/' + repo + ' ，你按它 README 或 INSTALL.md 的步骤装就行，优先装进 ' + DSH_PROFILE + ' profile；' +
       (spec ? '安装源可以试试 ' + spec + '；' : '') +
       '如果 pnpm 拦构建脚本，放行一下再装。\n' +
       '有需要我选择、确认或提供信息（账号、key、路径）的地方直接问我，装完告诉我装好没、要不要重启。'
@@ -837,7 +846,7 @@ async function installedRows() {
     const name = e.options && e.options.name
     if (name) loaderNames.add(name)
   }
-  // 包是否确实还在某处：web deps/bundles、其他 profile、loader 挂载
+  // 包是否确实还在某处：当前 profile deps/bundles、其他 profile、loader 挂载
   const inProfileOrLoader = (name) => deps.has(name) || bundles.has(name) || otherMap.has(name) || loaderNames.has(name)
   const marketRecFor = (name) => Object.values(marketInstalled).find((r) => r && (r.package === name || r.spec === name))
   const rows = []
@@ -926,19 +935,19 @@ async function togglePlugin(args) {
   return { ok: true, message: (enabled ? '已启用 ' : '已禁用 ') + name + '，重启 dsh 后生效' }
 }
 
-// 从所有 profile 中移除包（web 及装有它的其他 profile），返回清理的 profile 列表。
+// 从所有 profile 中移除包（当前 DSH_PROFILE 及装有它的其他 profile），返回清理的 profile 列表。
 // 统一走 dsh CLI（pnpm remove + bundles reconcile），避免残留导致已安装列表“复活”。
 async function removeFromAllProfiles(name, job) {
   const cleaned = []
-  const webManifest = await readProfileManifest()
-  const webDeps = new Set(Object.keys((webManifest && webManifest.dependencies) || {}))
-  const webBundles = new Set((webManifest && webManifest.dsh && webManifest.dsh.profile && webManifest.dsh.profile.bundles) || [])
-  if (webDeps.has(name) || webBundles.has(name)) {
+  const currentManifest = await readProfileManifest()
+  const currentDeps = new Set(Object.keys((currentManifest && currentManifest.dependencies) || {}))
+  const currentBundles = new Set((currentManifest && currentManifest.dsh && currentManifest.dsh.profile && currentManifest.dsh.profile.bundles) || [])
+  if (currentDeps.has(name) || currentBundles.has(name)) {
     const r = job
-      ? await runShellLogged(job, 'dsh plugin --profile web remove ' + q(name), 300000, { fullAccess: true })
-      : await runShell('dsh plugin --profile web remove ' + q(name), 300000, { fullAccess: true })
+      ? await runShellLogged(job, pluginCmd('remove', q(name)), 300000, { fullAccess: true })
+      : await runShell(pluginCmd('remove', q(name)), 300000, { fullAccess: true })
     if (!r.ok) return { ok: false, error: (r.stderr || '').trim() || 'dsh plugin remove 失败' }
-    cleaned.push('web')
+    cleaned.push(DSH_PROFILE)
   }
   const otherMap = await otherProfileMap()
   for (const prof of (otherMap.get(name) || [])) {
@@ -1021,7 +1030,7 @@ export default {
           return json(res, 200, startUninstall(body))
         }
         if (pathname === '/plugin-market/installed' && req.method === 'GET') {
-          return json(res, 200, { ok: true, rows: await installedRows() })
+          return json(res, 200, { ok: true, profile: DSH_PROFILE, rows: await installedRows() })
         }
         if (pathname === '/plugin-market/toggle' && req.method === 'POST') {
           const body = JSON.parse((await readBody(req)) || '{}')
