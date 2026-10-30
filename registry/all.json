@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-29T15:18:29.293Z",
+  "updatedAt": "2026-10-30T02:46:56.333Z",
   "items": [
     {
       "id": "rea-agents",
@@ -41929,42 +41929,6 @@
       "install": {
         "method": "manual",
         "source": "readme"
-      },
-      "source": "auto",
-      "auto": true,
-      "category": "session"
-    },
-    {
-      "id": "dsh-global-todo",
-      "name": "dsh-global-todo",
-      "type": "bundle",
-      "package": "dsh-global-todo",
-      "repo": "LUgABeEEE/dsh-global-todo",
-      "githubId": 1419420213,
-      "spec": "github:LUgABeEEE/dsh-global-todo#v0.21.0",
-      "version": "v0.21.0",
-      "releaseCheckedAt": "2026-10-29T09:09:15.337Z",
-      "author": {
-        "name": "LUgABeEEE",
-        "url": "https://github.com/LUgABeEEE"
-      },
-      "description": "Cross-session todo list for DeepSeek Harness where an agent\"s \"done\" never settles itself — the record waits in Needs review until a person confirms it. Built for a phone: the panel measures its own width, folds on scroll and keeps 44px touch targets. One JSON file both sides write, numbered step hand-offs, session read-back, and two machines folding one list through a shared directory.",
-      "tags": [
-        "agent-tools",
-        "task-management",
-        "todo",
-        "todo-list"
-      ],
-      "license": "MIT",
-      "downloads": 57,
-      "stars": 11,
-      "releasedAt": "2026-10-29T03:37:57Z",
-      "topicSourced": false,
-      "verified": true,
-      "install": {
-        "method": "npm-global",
-        "command": "npm install -g dsh-global-todo",
-        "source": "pkg"
       },
       "source": "auto",
       "auto": true,
@@ -234411,6 +234375,34 @@
         "source": "readme"
       },
       "status": "unavailable"
+    },
+    {
+      "id": "dsh-global-todo",
+      "name": "全局待办 / dsh-global-todo",
+      "type": "bundle",
+      "repo": "LUgABeEEE/dsh-global-todo",
+      "spec": "dsh-global-todo",
+      "package": "dsh-global-todo",
+      "description": "Cross-session todo list for DeepSeek Harness: one JSON file you own, written by you and your agent, handed to a conversation in one click, with steps that ship as a numbered plan and a review step so an agent's \"done\" is a claim a person confirms.",
+      "longDescription": "DeepSeek Harness 的跨会话待办清单：一份属于你的 JSON 文件，人和 Agent 读写同一份，一键交给某个对话继续干；待办可带步骤（派发时作为编号计划），Agent 标完成只是声明、需人确认。\n\n- 27 条 HTTP 路由、11 个 agent 工具、382 个测试（0.21.0）\n- 零运行时依赖，无构建步骤；MIT 许可\n- DSH >=0.2.0-rc.1 <0.3.0，Node >=22.19.0\n- 安装：`dsh plugin add dsh-global-todo`；介绍页 https://lugabeeee.github.io/dsh-global-todo/",
+      "tags": [
+        "todo",
+        "task-management",
+        "cross-session",
+        "hand-off",
+        "agent-tools"
+      ],
+      "category": "session",
+      "license": "MIT",
+      "author": {
+        "name": "LUgABeEEE",
+        "url": "https://github.com/LUgABeEEE"
+      },
+      "source": "curated",
+      "verified": true,
+      "install": {
+        "method": "dsh-plugin-add"
+      }
     },
     {
       "id": "dsh-mcp-tools",

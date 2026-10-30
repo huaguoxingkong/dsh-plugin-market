@@ -2610,7 +2610,6 @@ dsh web   # 重启后侧栏 Settings 旁常驻「插件市场」按钮
 - [dsh-taskfold](https://github.com/yindf/taskfold) Keeps long coding-agent sessions lean: wrap a stretch of work in a named task, and when it ⭐ 11 ⬇ 2.1k · 手动安装 · v0.39.1
 - [dsh-evolve](https://github.com/chenzheshushi-commits/dsh-evolve) Self-evolving memory + skill lifecycle for DeepSeek Harness. Cross-session memory with zer ⭐ 11 ⬇ 4.4k · v0.8.0
 - [dsh-workspace-mover](https://github.com/PianoPrince/dsh-workspace-mover) 在 DSH 侧边栏安全迁移会话：真迁移原始档案，支持失联会话恢复、移动历史、一键撤回和 agent 工具。 ⭐ 11 ⬇ 12 · 手动安装 · v2.4.2
-- [dsh-global-todo](https://github.com/LUgABeEEE/dsh-global-todo) Cross-session todo list for DeepSeek Harness where an agent"s "done" never settles itself  ⭐ 11 ⬇ 57 · v0.21.0
 - [dsh-usage-dashboard](https://github.com/Cassius0924/dsh-usage-dashboard) DeepSeek 额度与用量仪表盘 —— DSH (DeepSeek Harness) Web 插件：余额还能撑几天、今日/本月花了多少、哪个模型和哪个会话最贵、图片/多模态用量、 ⭐ 11 ⬇ 0 · v0.8.3
 - [dsh-qq-onebot-bridge](https://github.com/cheesehaqi/dsh-qq-onebot-bridge) QQ ↔ DeepSeek Harness agent bridge over OneBot v11 (reverse WebSocket). v0.5.x "See it, fi ⭐ 11 ⬇ 0 · v0.7.8
 - [dsh-mcp-lazy](https://github.com/wings1848/dsh-mcp-lazy) Lazy MCP gateway for DeepSeek Harness: one stable proxy tool instead of N tool schemas, se ⭐ 11 ⬇ 0 · v0.4.1
@@ -3757,6 +3756,7 @@ dsh web   # 重启后侧栏 Settings 旁常驻「插件市场」按钮
 - [dsh-goodmemory](https://github.com/hjqcan/dsh-goodmemory) Automatic cross-session GoodMemory recall and writeback for DeepSeek Harness ⭐ 1 ⬇ 0 · 手动安装 · v0.1.0
 - [LiuHe](https://github.com/wulun811/LiuHe) LLM-native code toolkit: Rust multi-language parser (tree-sitter) + 44 MCP tools for atomi ⭐ 1 ⬇ 0 · 未验证 · 手动安装
 - [dsh-feishu-bridge](https://github.com/21hbguo/dsh-feishu-bridge-plugin) 飞书机器人 ↔ DSH 对话桥：进程内驱动 DSH 会话，流式卡片回复 ⭐ 1 ⬇ 0 · 未验证 · 官方脚本安装 · v0.0.2
+- [ dsh-global-todo](https://github.com/LUgABeEEE/dsh-global-todo) Cross-session todo list for DeepSeek Harness: one JSON file you own, written by you and yo ⭐ 0 ⬇ 0
 - [dsh-import-agents](https://github.com/Chang-Tong/dsh-import-agents)  pi、opencode、codex、claude-code 的会话、聊天记录与 agent 导入 DeepSeek Harness（dsh）。导入的会话出现在会话列表，可携带完整 ⭐ 0 ⬇ 0 · v0.2.4
 - [DSH BTW](https://github.com/gulagala001/dsh-btw) 在主输入框上方使用原生弹窗，借助当前会话上下文进行旁聊与追问，主任务可继续运行。 ⭐ 0 ⬇ 0
 - [dsh-undo-plugin](https://github.com/gulagala001/dsh-undo-plugin) 对话与工作区文件原地撤回，支持确认和撤销撤回。 ⭐ 0 ⬇ 0
