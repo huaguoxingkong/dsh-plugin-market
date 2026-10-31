@@ -17,7 +17,7 @@ dsh web   # 重启后侧栏 Settings 旁常驻「插件市场」按钮
 
 ## 目录
 
-- [界面与主题](#ui) (2453)
+- [界面与主题](#ui) (2454)
 - [会话与记忆](#session) (2242)
 - [Agent 与工作流](#agent) (1647)
 - [工具与集成](#tools) (1152)
@@ -25,7 +25,7 @@ dsh web   # 重启后侧栏 Settings 旁常驻「插件市场」按钮
 - [通信与移动](#comm) (386)
 - [安全与权限](#auth) (565)
 - [技能与扩展](#skills) (243)
-- [市场与发现](#market) (723)
+- [市场与发现](#market) (722)
 - [趣味与个性](#fun) (149)
 - [其他](#other) (1102)
 
@@ -1596,6 +1596,7 @@ dsh web   # 重启后侧栏 Settings 旁常驻「插件市场」按钮
 - [deepseek-chat](https://github.com/MarSuero/deepseek-chat-obsidian) Obsidian sidebar chat powered by DeepSeek Harness (dsh) ⭐ 1 ⬇ 0 · 未验证 · git clone · v0.1.1
 - [auth-gate](https://github.com/javaxiaov/deepseek-herness-login) Login gate + account settings for the DeepSeek Harness web UI. Host persists account/passw ⭐ 1 ⬇ 0 · 手动安装
 - [dsh-client-ui-m3-theme](https://github.com/DarkskyX15/dsh-client-ui-m3-theme) Material 3 theme plugin for DeepSeek Harness: full M3 token mapping (light/dark palettes w ⭐ 1 ⬇ 0 · 未验证 · 手动安装
+- [dsh-theme-plugin](https://github.com/gulagala001/dsh-theme-plugin) 在 DSH 设置中统一管理外观和主题，浏览带图片的多来源市场，一键检查安装，并提供失败恢复与 AI 修复说明。 ⭐ 0 ⬇ 0
 - [提示词改写](https://github.com/huaguoxingkong/dsh-prompt-rewriter) 在输入框旁加一个按钮，把草稿原地改写成目标、格式、约束齐全的可执行提示词；不发送、不弹预览窗，可按 Ctrl+Z 还原。 ⭐ 0 ⬇ 0 · v1.5.1
 - [DSH Background · 多区域背景](https://github.com/flora-ari/dsh-background) 为全局、聊天和侧边栏设置独立图片背景，支持图库轮播、透明度与按比例缩放。 ⭐ 0 ⬇ 0 · v0.1.9
 - [dsh-projects](https://github.com/WenhongPan/dsh-projects) Project and session organization for DeepSeek Harness: multi-folder projects, attention su ⭐ 0 ⬇ 0 · v0.3.0-alpha.1
@@ -9813,7 +9814,6 @@ dsh web   # 重启后侧栏 Settings 旁常驻「插件市场」按钮
 - [dsh-balance-and-cost](https://github.com/boooooooer/dsh-balance-and-cost) DeepSeek 账户余额与模型消耗量：计价缓存按消耗发生的具体时间与当时单价冻结花费，价格表同步官方最新（deepseek-flash / deepseek-v4-pro，工作日 ⭐ 1 ⬇ 0 · 手动安装
 - [dsh-token-ledger](https://github.com/chenmiao8563/dsh-token-ledger) Transparent, auditable token accounting for DeepSeek Harness: a restart-safe ledger over t ⭐ 1 ⬇ 3 · v1.1.2
 - [dsh-bloomglass](https://github.com/CosmoSail/dsh-bloomglass) A DeepSeek Harness Web theme: ten OKLCH Chinese-traditional-colour palettes that adapt to  ⭐ 1 ⬇ 0
-- [dsh-theme-plugin](https://github.com/gulagala001/dsh-theme-plugin) Themes, appearance customization and visual theme markets for DeepSeek Harness. ⭐ 1 ⬇ 683 · 手动安装 · v0.3.1-dsh.0.2.1-rc.5
 - [dsh-any-background](https://github.com/lilcandi/dsh-any-background-plus) Appearance plugin for DeepSeek Harness: custom theme color (PS-style color wheel), backgro ⭐ 1 ⬇ 0
 - [dsh-oauth-login](https://github.com/aa2246740/dsh-oauth-login) DSH-owned subscription login powered by Pi AI adapters: OAuth plus official Plan API keys, ⭐ 1 ⬇ 627 · git clone · v0.2.9
 - [dsh-liquid-inference](https://github.com/architect-xyz/liquid-dsh-plugin) Liquid Inference for DeepSeek Harness: a `liquid` model route plus read-only market tools ⭐ 1 ⬇ 0
