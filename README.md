@@ -17,12 +17,12 @@ dsh web   # 重启后侧栏 Settings 旁常驻「插件市场」按钮
 
 ## 目录
 
-- [界面与主题](#ui) (2454)
+- [界面与主题](#ui) (2453)
 - [会话与记忆](#session) (2242)
 - [Agent 与工作流](#agent) (1647)
 - [工具与集成](#tools) (1152)
 - [开发与输入](#dev) (634)
-- [通信与移动](#comm) (385)
+- [通信与移动](#comm) (386)
 - [安全与权限](#auth) (565)
 - [技能与扩展](#skills) (243)
 - [市场与发现](#market) (723)
@@ -691,7 +691,6 @@ dsh web   # 重启后侧栏 Settings 旁常驻「插件市场」按钮
 - [dsh-accountdisplayname-edit](https://github.com/AomiRaku/dsh-accountDisplayName-edit) Replaces the sidebar account label (the phone number, email, or account name) and avatar w ⭐ 3 ⬇ 0 · 手动安装
 - [dsh-workspace-categories](https://github.com/burningg/dsh-workspace-categories) Category groups for DeepSeek Harness workspaces — group the flat project list into named s ⭐ 3 ⬇ 0
 - [dsh-plugin-file-and-terminal](https://github.com/CarrotFish/dsh-file-and-terminal) Host terminal and Explorer-style file manager panels for the DSH web profile ⭐ 3 ⬇ 0 · 手动安装 · v0.1.1
-- [dsh-deepseek-workbench](https://github.com/gulagala001/dsh-deepseek-workbench) DeepSeek 网页聊天、临时侧栏聊天、API 开放平台与 DSH 会话迁移。 ⭐ 3 ⬇ 893 · 手动安装 · v0.1.4-dsh.0.2.1-rc.5
 - [dsh-suggest-actions](https://github.com/hiJoeLee/dsh-suggest-actions) 在每条回复下方给出可点的下一步建议，点一下就作为你的消息发出去。Clickable next-step suggestions under every reply; one cli ⭐ 3 ⬇ 0
 - [dsh-workspace-categories](https://github.com/Knight-Zjy/dsh-workspace-categories) 分类树形式的工作区管理器（分类 > 工作区 > 会话），接管 DeepSeek Harness 左侧栏的工作区浏览器。 ⭐ 3 ⬇ 0 · 手动安装
 - [dsh-ide-workbench](https://github.com/LiangshouX/dsh-ide-workbench) JetBrains-style IDE workbench for DeepSeek Harness: Project, Commit, Terminal and Git tool ⭐ 3 ⬇ 0
@@ -8414,6 +8413,7 @@ dsh web   # 重启后侧栏 Settings 旁常驻「插件市场」按钮
 - [dsh-video-gen](https://github.com/Yang-wudi/dsh-video-gen) Bring text-to-video and image-to-video generation to DeepSeek Harness — DashScope Wanx, Vo ⭐ 1 ⬇ 0 · 手动安装 · v0.2.1
 - [dsh-voice-kit](https://github.com/aaaadrop/dsh-voice-kit) Voice input (Web Speech API) and read-aloud (speechSynthesis) for the DeepSeek Harness web ⭐ 1 ⬇ 0 · 手动安装
 - [dsh-weixin](https://github.com/Stu-KatoMegumi/dsh-weixin) 微信 iLink 通道与 DSH 的流式智能代理插件 ⭐ 1 ⬇ 0 · 手动安装
+- [DeepSeek Workbench](https://github.com/gulagala001/dsh-deepseek-workbench) 在 DeepSeek Harness 中使用 DeepSeek 网页聊天、临时侧栏聊天和 API 开放平台，并将网页历史迁移为可继续的 DSH 会话。 ⭐ 0 ⬇ 0
 - [dsh-foxbell-pet](https://github.com/jarvislee90s-dot/dsh-foxbell-pet) DSH Web 右下角可拖拽的多宠物桌宠系统（内置小狐狸 Foxbell）：多项目状态监控（MAM 色彩口径：红待审批/黄运行/绿完成未读，深红错误）+ 语音提醒 + 外部宠物体系 ⭐ 0 ⬇ 1.1k · v2.4.0
 - [dsh-plugin-subscription-oauth](https://github.com/EricFL1998/dsh-subscription-oauth) Use subscription accounts as DeepSeek Harness LLM providers — Kimi Code (OAuth device flow ⭐ 0 ⬇ 41 · v0.17.23-subscription-native
 - [dsh-plugin-modelwatch](https://github.com/gh-gongjin/dsh-plugin-modelwatch) DSH OpenRouter 模型监控插件：新上模型 / 热门周榜 / 变化流水。全程只读 GET，不推外部通知。 ⭐ 0 ⬇ 0 · 手动安装
