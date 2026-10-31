@@ -17,11 +17,11 @@ dsh web   # 重启后侧栏 Settings 旁常驻「插件市场」按钮
 
 ## 目录
 
-- [界面与主题](#ui) (2452)
+- [界面与主题](#ui) (2453)
 - [会话与记忆](#session) (2242)
 - [Agent 与工作流](#agent) (1647)
 - [工具与集成](#tools) (1152)
-- [开发与输入](#dev) (635)
+- [开发与输入](#dev) (634)
 - [通信与移动](#comm) (385)
 - [安全与权限](#auth) (565)
 - [技能与扩展](#skills) (243)
@@ -1597,6 +1597,7 @@ dsh web   # 重启后侧栏 Settings 旁常驻「插件市场」按钮
 - [deepseek-chat](https://github.com/MarSuero/deepseek-chat-obsidian) Obsidian sidebar chat powered by DeepSeek Harness (dsh) ⭐ 1 ⬇ 0 · 未验证 · git clone · v0.1.1
 - [auth-gate](https://github.com/javaxiaov/deepseek-herness-login) Login gate + account settings for the DeepSeek Harness web UI. Host persists account/passw ⭐ 1 ⬇ 0 · 手动安装
 - [dsh-client-ui-m3-theme](https://github.com/DarkskyX15/dsh-client-ui-m3-theme) Material 3 theme plugin for DeepSeek Harness: full M3 token mapping (light/dark palettes w ⭐ 1 ⬇ 0 · 未验证 · 手动安装
+- [提示词改写](https://github.com/huaguoxingkong/dsh-prompt-rewriter) 在输入框旁加一个按钮，把草稿原地改写成目标、格式、约束齐全的可执行提示词；不发送、不弹预览窗，可按 Ctrl+Z 还原。 ⭐ 0 ⬇ 0 · v1.5.1
 - [DSH Background · 多区域背景](https://github.com/flora-ari/dsh-background) 为全局、聊天和侧边栏设置独立图片背景，支持图库轮播、透明度与按比例缩放。 ⭐ 0 ⬇ 0 · v0.1.9
 - [dsh-projects](https://github.com/WenhongPan/dsh-projects) Project and session organization for DeepSeek Harness: multi-folder projects, attention su ⭐ 0 ⬇ 0 · v0.3.0-alpha.1
 - [dsh-pwa](https://github.com/jackxu925/dsh-pwa) Phone-first PWA for DeepSeek Harness: sessions, streaming chat, approvals on iOS and Andro ⭐ 0 ⬇ 0 · 1.10.2
@@ -7544,7 +7545,6 @@ dsh web   # 重启后侧栏 Settings 旁常驻「插件市场」按钮
 - [fujiang-armor](https://github.com/c3cvld7aag/fujiang-dsh) 富江破甲 ⭐ 410 ⬇ 1.3k · 手动安装 · v0.4.3
 - [desktop](https://github.com/hust-open-atom-club/oh-dsh) Oh-DSH: installable Desktop, Web, and TUI surfaces over DeepSeek Harness ⭐ 323 ⬇ 17.7k · 官方脚本安装 · v0.2.0
 - [dsh-reasoning-effort](https://github.com/HanaAyane/dsh-reasoning-effort) Native DeepSeek Harness model selector integration with a reasoning-effort slider, model-d ⭐ 261 ⬇ 3.8k · 手动安装 · v0.9.1
-- [dsh-prompt-rewriter](https://github.com/huaguoxingkong/dsh-prompt-rewriter) One-click prompt enhancement beside the DeepSeek Harness composer: rewrites a draft in pla ⭐ 195 ⬇ 21 · 手动安装 · v1.6.2
 - [dsh-uumit-remote](https://github.com/uumit-ai/dsh-uumit-remote) DeepSeek Harness plugin: open your DSH from your phone or any computer through UUMit, with ⭐ 189 ⬇ 0 · 手动安装
 - [dsh-preset-plus](https://github.com/Rain-kl/dsh-preset-plus) DeepSeek Harness universal preset enhancement plugin: an editable preset editor (system/us ⭐ 155 ⬇ 0 · 手动安装 · v0.1.5
 - [dsh-model-fusion](https://github.com/aa2246740/dsh-model-fusion) Fusion for DeepSeek Harness: one model entry backed by a frontier Lead that reads, briefs  ⭐ 69 ⬇ 941 · 手动安装 · v0.2.9
